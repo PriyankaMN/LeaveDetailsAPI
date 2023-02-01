@@ -8,4 +8,4 @@ jms:
 cronjob: '0 0/12 * * * ? *'
 
 file:
-  path: 'C:\Users\primahar\OneDrive - Capgemini\Desktop\Assigments\input.csv'
+  path: 'C:\Users\Desktop\Assigments\input.csv'
