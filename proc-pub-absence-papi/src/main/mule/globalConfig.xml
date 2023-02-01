@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="ab7550e5-3480-4cc7-ae75-19cd6a579409" >
+		<jms:active-mq-connection username="${jms.userName}" password="${jms.password}" >
+			<jms:factory-configuration brokerUrl="${jms.url}" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="73f9039d-fdd3-4aec-a6e0-bebe4e662ce6" file="config/${mule.env}.yaml" />
+	<file:config name="File_Config1" doc:name="File Config" doc:id="9e818a6a-0e25-47fc-8069-2ffd35f38e62" />
+</mule>

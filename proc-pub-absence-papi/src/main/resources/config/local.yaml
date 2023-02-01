@@ -1,0 +1,11 @@
+apiId: ""
+  
+jms:
+  userName: "admin"
+  password: "admin"
+  url: "tcp://inlen8520028469:61616"
+
+cronjob: '0 0/12 * * * ? *'
+
+file:
+  path: 'C:\Users\primahar\OneDrive - Capgemini\Desktop\Assigments\input.csv'

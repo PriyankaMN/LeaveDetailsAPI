@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	
+	<flow name="proc-pub-absence-papiFlow1" doc:id="f36a6992-2c07-46d7-b068-1dda684a1098" >
+		<scheduler doc:name="Scheduler" doc:id="239ad2c8-b53f-49c0-bccb-82e184fecb73">
+			<scheduling-strategy>
+				<cron expression="${cronjob}" />
+			</scheduling-strategy>
+		</scheduler>
+		<file:read doc:name="Read" doc:id="d544f4a3-ec9e-40d8-bd8c-5feaa7f0de92" config-ref="File_Config1" path="#[p('file.path')]"/>
+		<ee:transform doc:name="Transform Message" doc:id="0b6dc47d-1505-4063-8690-9cb7a10c3bc2">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+
+var payload02 = payload
+---
+payload02 map ((value, index) -> {
+	"EMPLOYEENUMBER" : value.EMPLOYEENUMBER as String default null,
+	"VALIDITYDATE" : value.VALIDITYDATE as String default null,
+	"PAY_CODE" : value.PAY_CODE as String default null,
+	"START_DTTM" : value.START_DTTM as String default null,
+	"END_DTTM" : value.END_DTTM as String default null,
+	"HOURS" : value.HOURS as String default null,
+	"AMOUNT" : value.AMOUNT as String default null,
+	"REFERENCE_KEY" : value.REFERENCE_KEY as String default null
+})]]></ee:set-payload>
+			</ee:message>
+			<ee:variables />
+		</ee:transform>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="8f4e80e0-c428-4e7c-ad02-4e35475e21ac" variableName="data" />
+		<jms:publish doc:name="Publish" doc:id="c839a92b-d6ea-492d-9f4b-2a7f07a42fbd" destination="Q.vac.papi" config-ref="JMS_Config" sendCorrelationId="ALWAYS">
+			<jms:message>
+				<jms:body><![CDATA[#[vars.data]]]></jms:body>
+			</jms:message>
+		</jms:publish>
+		<logger level="INFO" doc:name="Logger" doc:id="3781755a-454f-4116-bb48-30518c53a201" message='#[%dw 2.0
+output application/json
+---
+{
+	"CorelationId" : vars.CorelationId,
+	"payload" : payload
+}]' />
+		<error-handler ref="globalErrorHandelerError_Handler" />
+	</flow>
+</mule>

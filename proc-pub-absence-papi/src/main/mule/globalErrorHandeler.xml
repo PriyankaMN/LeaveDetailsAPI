@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<error-handler name="globalErrorHandelerError_Handler" doc:id="bc7cf265-210a-40d9-b5f8-2379ba3f9a2c" >
+<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7c2ad921-a7dc-43cc-a34d-efbf826b6384" type="FILE:ACCESS_DENIED, FILE:CONNECTIVITY, FILE:FILE_LOCK, FILE:ILLEGAL_PATH, FILE:RETRY_EXHAUSTED, JMS:CONNECTIVITY, JMS:DESTINATION_NOT_FOUND, JMS:ILLEGAL_BODY, JMS:PUBLISHING, JMS:RETRY_EXHAUSTED, EXPRESSION, STREAM_MAXIMUM_SIZE_EXCEEDED" >
+			<set-variable value="#[400]" doc:name="Set Variable" doc:id="8ebf6225-3bb0-48d6-b9cc-5367cc8bb839" variableName="httpStatus" />
+			<ee:transform doc:name="Transform Message" doc:id="8f4c61a8-c987-4d44-a757-cc7aef61589d" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorType": error.errorType.identifier,
+	 "errorMessage": error.description
+	 }]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b1e57c16-6638-40d9-a2c6-763cf3c37a70" type="ANY" >
+			<set-variable value="#[500]" doc:name="Set Variable" doc:id="c04d150d-76c1-4588-b99b-a4c43744e2e9" variableName="httpStatus" />
+			<ee:transform doc:name="Transform Message" doc:id="c3856310-47fa-4484-94c3-a3437e016c50" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorType": error.errorType.identifier,
+	 "errorMessage": error.description
+	 }]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>	
+</error-handler>
+</mule>

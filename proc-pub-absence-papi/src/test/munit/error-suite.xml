@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="main-suite.xml" />
+<munit:test name="pub-test-suite-JMS-any" doc:id="f6fef04e-1214-435c-b0fb-397dce7cae89" description="Test" ignore="true">
+<munit:behavior >
+<munit-tools:mock-when doc:name="Mock-flow-ref" doc:id="5dfaa540-1cd3-4110-96b7-d0f909e862e2" processor="jms:publish">
+<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="JMS_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+</munit-tools:then-return>
+</munit-tools:mock-when>
+</munit:behavior>
+<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="d266731b-1a98-4080-bf08-d293fc40c155" />
+			<flow-ref doc:name="Flow Reference" doc:id="042bcb02-ec8b-4f6e-b4c9-df4e687b0560" name="proc-pub-absence-papiFlow1"/>
+		</munit:execution>
+<munit:validation >
+<munit-tools:assert-equals doc:name="Assert equals" doc:id="c1c726b8-7620-4fc5-a960-c0c3659c08a3" actual="#[vars.httpStatus]" expected="#[500]"/>
+</munit:validation>
+</munit:test>
+	<munit:test name="error-suiteTest" doc:id="a2f0cb23-deff-40a0-9d96-c95e12d213d2">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="771c305e-85c1-49ee-acc0-1922a0de8d9c" processor="file:read">
+			<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Read" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="d544f4a3-ec9e-40d8-bd8c-5feaa7f0de92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+				<munit-tools:error typeId="FILE:ILLEGAL_PATH" />
+			</munit-tools:then-return>
+		</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="4dd26730-fc3a-4e4d-8294-0cab5bf3dda9" name="proc-pub-absence-papiFlow1"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="672d3e7b-2437-4040-b178-d07e1d0022ea" expression="#[output application/json &#10;&#10;var p = {(vars.errorResponse.errors.error_info.error_details)}&#10;---&#10;p.category]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="pub-test-suite-JMS-file" doc:id="ae16f6c6-99e9-4f7a-a852-ddbcc6c45dd9" description="Test" ignore="true">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock-flow-ref" doc:id="c3663497-d3de-4225-bdd4-fa872b1a37f3" processor="on-error-propagate" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="FILE:ACCESS_DENIED, FILE:CONNECTIVITY, FILE:FILE_LOCK, FILE:ILLEGAL_PATH, FILE:RETRY_EXHAUSTED, JMS:CONNECTIVITY, JMS:DESTINATION_NOT_FOUND, JMS:ILLEGAL_BODY, JMS:PUBLISHING, JMS:RETRY_EXHAUSTED, EXPRESSION, STREAM_MAXIMUM_SIZE_EXCEEDED" attributeName="type" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="200d6203-1add-4917-84d3-a4d75226e9e1" name="proc-pub-absence-papiFlow1" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="eef8c6f3-bac9-4bae-8e3e-f10219d686c3" actual="#[vars.httpStatus]" expected="#[400]" />
+		</munit:validation>
+	</munit:test>
+
+</mule>
