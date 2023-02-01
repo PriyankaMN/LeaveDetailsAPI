@@ -1,0 +1,6 @@
+%dw 2.0
+
+type auto_3880ab24_3740_42a1_a351_3d30171366af_Output_Variables_httpStatus = {|  |} {"typeAlias": "Object",
+"class": "java.lang.Object",
+"typeId": "java.lang.Object"}
+

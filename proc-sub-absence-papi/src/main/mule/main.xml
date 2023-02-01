@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="634016c6-fb63-4e49-9348-f7715fab222a" i18n="#[vars.withFailures]"/>
+	<flow name="try" doc:id="3880ab24-3740-42a1-a351-3d30171366af" >
+		<jms:listener doc:name="On New Message" doc:id="cb98d673-7aed-4a94-9e6d-01fd3aa349fe" config-ref="JMS_Config" destination="Q.vac.papi"/>
+		<foreach doc:name="For Each" doc:id="0892209e-ca1d-49eb-a888-72239310ba3c">
+			<set-payload value="#[payload]" doc:name="Set Payload" doc:id="4684644f-d0fd-4995-a8f8-136694b0fd55" />
+			<choice doc:name="Choice" doc:id="202270cf-008f-4ca2-a6e8-e8125d984afd">
+				<when expression='#[payload.PAY_CODE == "LIC_SICK"]'>
+					<try doc:name="Try" doc:id="87711dad-a7c4-4bb4-b44f-145f9e25a919" >
+						<ee:transform doc:name="Transform Message" doc:id="b800df5a-2771-4d0c-bcf8-9fb454c189bc">
+						<ee:message>
+						</ee:message>
+						<ee:variables>
+							<ee:set-variable variableName="method"><![CDATA[%dw 2.0
+output application/json
+---
+if(payload.AMOUNT >=0 and payload.AMOUNT <= 1) "POST"
+else if(payload.AMOUNT >= -1 and payload.AMOUNT< 0)"PUT"
+else "GET"]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+						<flow-ref doc:name="Flow Reference" doc:id="83e22ca3-8c9d-4940-99a6-4759edf22a7d" name="Request_LIV"/>
+						<error-handler >
+							<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="cb8f0493-25c0-4f7b-9439-c095d3d0bd60" >
+								<logger level="INFO" doc:name="Logger" doc:id="01b0e39e-3759-436a-a6e5-7b37484a1a5a" message="#[payload]"/>
+							</on-error-continue>
+						</error-handler>
+					</try>
+
+				</when>
+				<when expression='#[payload.PAY_CODE == "VAC"]'>
+					<try doc:name="Try" doc:id="e0efb89a-d5ee-4c13-afc4-42c52b8d08c5" >
+						<ee:transform doc:name="Transform Message" doc:id="15ab1d6d-6d5d-4d38-a38d-9a73161ece17">
+						<ee:message>
+						</ee:message>
+						<ee:variables>
+							<ee:set-variable variableName="method"><![CDATA[%dw 2.0
+output application/json
+---
+if(payload.AMOUNT >=0 and payload.AMOUNT <= 1) "POST"
+else if(payload.AMOUNT >= -1 and payload.AMOUNT<= 0)"PUT"
+else "GET"]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+						<flow-ref doc:name="Flow Reference" doc:id="6a26b1b2-177b-4c9a-b048-ac459a5bcb01" name="Request_VAC"/>
+						<error-handler >
+							<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="021dfdf1-9e18-4af9-94cd-c74ba4faecd0" >
+								<logger level="INFO" doc:name="Logger" doc:id="32955df2-a303-426a-88e7-af503faead1f" message="#[payload]"/>
+							</on-error-continue>
+						</error-handler>
+					</try>
+				</when>
+				<otherwise>
+					<ee:transform doc:name="Transform Message" doc:id="d33786f1-4f3d-425a-8aec-85af33c9cbd8" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message" : "amount value is invalid"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<logger level="INFO" doc:name="Logger" doc:id="d3333958-b02d-41e8-ac04-22e3af2b75dd" message="#[payload]"/>
+
+				</otherwise>
+
+		</choice>
+		</foreach>
+		<error-handler ref="globalErrorHandelerError_Handler" />
+	
+</flow></mule>

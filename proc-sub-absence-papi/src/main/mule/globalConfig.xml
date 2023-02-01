@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">	<http:request-config name="HTTP_Request_configuration_Medical" doc:name="HTTP Request configuration" doc:id="3d109541-f9c7-4e70-9b65-672cb09d362e" basePath="/api" responseTimeout="60000">
+		<http:request-connection host="${http.Medical.host}" port="${http.Medical.port}"/>
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration_Vacation" doc:name="HTTP Request configuration" doc:id="57878730-9a6e-4d0f-a9ac-13c852fa94d2" basePath="/api" responseTimeout="60000">
+		<http:request-connection host="${http.Vacation.host}" port="${http.Vacation.port}" />
+	</http:request-config>
+	
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="fe1df5e2-5944-4c98-8646-9edc9b8bac20" basePath="/api">
+		<http:listener-connection host="${http.host}" port="${http.port}" />
+	</http:listener-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="7c014171-edc4-47f5-8ce6-a10bf05759d2" >
+		<jms:active-mq-connection username="${jms.userName}" password="${jms.password}" >
+			<jms:factory-configuration brokerUrl="${jms.url}" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="f07fb7ba-06a2-49d2-806f-35c18b5563a3" file="config/${mule.env}.yaml" />
+</mule>

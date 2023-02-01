@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="error-test-suite.xml" />
+	<munit:test name="sub-test-suite-HTTP" doc:id="19428025-804d-441f-89b9-4603368c0fdb" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock-flow-ref" doc:id="c8dedc70-7899-4874-b6bf-60a68d15f73a" processor="on-error-propagate" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="HTTP:BAD_GATEWAY, HTTP:BAD_REQUEST, HTTP:CLIENT_SECURITY, HTTP:CONNECTIVITY, HTTP:FORBIDDEN, HTTP:INTERNAL_SERVER_ERROR, HTTP:METHOD_NOT_ALLOWED, HTTP:NOT_ACCEPTABLE, HTTP:NOT_FOUND, HTTP:PARSING, HTTP:RETRY_EXHAUSTED, HTTP:SERVICE_UNAVAILABLE, HTTP:TIMEOUT, HTTP:TOO_MANY_REQUESTS, HTTP:UNAUTHORIZED, HTTP:UNSUPPORTED_MEDIA_TYPE, EXPRESSION, STREAM_MAXIMUM_SIZE_EXCEEDED" attributeName="type" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="aca7d0ce-cc5f-4f77-a128-e7c9de1cb633" name="try" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="fdd7aa59-f6d9-477d-b05a-a9b73d607406" actual="#[vars.httpStatus]" expected="#[500]" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="sub-test-suite-ANY" doc:id="28371630-5ad4-4a40-b350-e6e8e2343660" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock-flow-ref" doc:id="48225b70-ea10-48f4-adaf-c24a780fde6d" processor="on-error-propagate" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="ANY" attributeName="type" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="1e61b6a4-09c2-47fe-bc59-c99eaa1e04b7" name="try" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="b8f82333-3045-4295-a4fc-5ad83c3552cc" actual="#[vars.isError]" expected="istrue" />
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

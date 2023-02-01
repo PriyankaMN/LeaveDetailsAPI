@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<sub-flow name="Request_VAC" doc:id="d0d08e28-fcfa-4c4b-bba5-df736126ba9b" >
+		<http:request method="#[vars.method]" doc:name="Request" doc:id="af1e9892-0109-4965-a9b4-470206556abc" config-ref="HTTP_Request_configuration_Vacation" path="/vactionEmployee" />
+	</sub-flow>
+	<sub-flow name="Request_LIV" doc:id="cea34bd8-f4cf-4f1f-b1f4-a4ebf8ea69eb" >
+		<http:request method="#[vars.method]" doc:name="Request" doc:id="93c19a9a-e1c7-4526-936e-0b9b6a544cd8" config-ref="HTTP_Request_configuration_Medical" path="/medicalEmployee" />
+	</sub-flow>
+</mule>

@@ -1,0 +1,26 @@
+apiId: ""
+  
+jms:
+  userName: "admin"
+  password: "admin"
+  url: "tcp://inlen8520028469:61616"
+  
+http:
+  host: "0.0.0.0"
+  port: "8081"    
+  basepath: "/api/*"
+  Medical:
+    host: "0.0.0.0"
+    port: "8083"    
+    basepath: "/api/*"
+  Vacation:
+    host: "0.0.0.0"
+    port: "8083"    
+    basepath: "/api/*"
+  
+database:
+  user: "root"
+  hostName: "localhost"
+  port: "3306"
+  password: "root"
+  dB: "Mulesoft"
