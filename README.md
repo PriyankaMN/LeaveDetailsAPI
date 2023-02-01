@@ -33,6 +33,10 @@ Data mapping for Vacation
 
 [Data mapping for Vacation.xls](https://github.com/PriyankaMN/LeaveDetailsAPI/files/10557478/Data.mapping.for.Vacation.xls)
 
+Project Specification:
+
+[Attendance POC.docx](https://github.com/PriyankaMN/LeaveDetailsAPI/files/10559400/Attendance.POC.docx)
+
 Project Document:
 
 [attendanceEmployee_ProjectDocument.pdf](https://github.com/PriyankaMN/LeaveDetailsAPI/files/10557484/attendanceEmployee_ProjectDocument.pdf)
